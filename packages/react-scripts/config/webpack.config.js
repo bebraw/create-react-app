@@ -693,7 +693,7 @@ module.exports = function (webpackEnv) {
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
       // Generate a service worker script that will precache, and keep up to date,
       // the HTML & assets that are part of the webpack build.
-      isEnvProduction &&
+      (process.env.SERVICE_WORKERS || isEnvProduction) &&
         !useServiceWorkerTemplate &&
         new WorkboxWebpackPlugin.GenerateSW({
           clientsClaim: true,
@@ -710,12 +710,16 @@ module.exports = function (webpackEnv) {
           ],
         }),
       // If app has file sw-template.js, workbox use this configuration for generate a advanced config based in template
-      isEnvProduction &&
+      (process.env.SERVICE_WORKERS || isEnvProduction) &&
         useServiceWorkerTemplate &&
         new WorkboxWebpackPlugin.InjectManifest({
           exclude: [/\.map$/, /asset-manifest\.json$/],
+          // TODO: It would be better if this would check for the existence of the file
+          // and picked the one that exists. Otherwise it should likely error.
           swSrc: `${paths.appSrc}/sw-template.${useTypeScript ? 'ts' : 'js'}`,
-          swDest: `${paths.appBuild}/service-worker.js`,
+          swDest: `${
+            isEnvProduction ? paths.appBuild + '/' : ''
+          }/service-worker.js`,
         }),
       // TypeScript type checking
       useTypeScript &&
