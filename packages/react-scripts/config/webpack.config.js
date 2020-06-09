@@ -719,7 +719,7 @@ module.exports = function (webpackEnv) {
           swSrc: `${paths.appSrc}/sw-template.${useTypeScript ? 'ts' : 'js'}`,
           swDest: `${
             isEnvProduction ? paths.appBuild + '/' : ''
-          }/service-worker.js`,
+          }service-worker.js`,
         }),
       // TypeScript type checking
       useTypeScript &&
